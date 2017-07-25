@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="E:\AndroidExam\FreakingMathFull\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="3be78ebc2706b2e1fe2f12d5726887a92d6c183b">
+        <dex dex="E:\AndroidExam\FreakingMathFull\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run_225afe470d2107df4b381a2b526a9605efe9edac\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="E:\AndroidExam\FreakingMathFull\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.0"
+        sha1="2771d3c63402002a136040c436f989fe95abc4c5">
+        <dex dex="E:\AndroidExam\FreakingMathFull\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run-bootstrap_2bb7b43061bb494e070d76228ac614f9d82a835f\classes.dex" />
+    </item>
+
+</items>
