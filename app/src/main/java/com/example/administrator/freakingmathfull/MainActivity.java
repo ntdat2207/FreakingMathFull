@@ -11,7 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    Button btnPlay, btnHighScore;
+    Button btnPlay;
     TextView txt;
     Intent intent;
     @Override
@@ -20,14 +20,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         initView();
         btnPlay.setOnClickListener(this);
-        btnHighScore.setOnClickListener(this);
         Typeface tp = Typeface.createFromAsset(getAssets(),"font/Finition.ttf");
         txt.setTypeface(tp);
     }
 
     private void initView() {
         btnPlay =(Button) findViewById(R.id.btnPlay);
-        btnHighScore = (Button) findViewById(R.id.btnHighScore);
         txt = (TextView) findViewById(R.id.textView);
     }
 
@@ -37,10 +35,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (id){
             case R.id.btnPlay:
                 intent = new Intent(MainActivity.this,PlayGameActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.btnHighScore:
-                intent = new Intent(MainActivity.this,HighScoreActivity.class);
                 startActivity(intent);
                 break;
         }

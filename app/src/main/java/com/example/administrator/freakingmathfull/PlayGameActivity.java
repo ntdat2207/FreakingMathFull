@@ -1,11 +1,13 @@
 package com.example.administrator.freakingmathfull;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.CountDownTimer;
+import android.os.Vibrator;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,16 +30,21 @@ public class PlayGameActivity extends AppCompatActivity implements View.OnClickL
     int score = 0;
     CountDownTimer timer;
     int progress = 59;
+    Vibrator v;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_game);
         initView();
 
+        v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
         PlayGame();
         btnTrue.setOnClickListener(this);
         btnFalse.setOnClickListener(this);
 
+        // Đếm thời gian, mỗi lần chạy giảm progress đi 1 đơn vị
+        // Khi progress = 0 thì khóa các nút bấm lại => tránh lỗi
         timer = new CountDownTimer(1000,10) {
             @Override
             public void onTick(long l) {
@@ -53,11 +60,13 @@ public class PlayGameActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onFinish() {
                 prb.setProgress(0);
-                CheckScore();
+                v.vibrate(500);
+                StopGame();
             }
         };
     }
 
+    // Ánh xạ các view cần thiết
     private void initView() {
         txtNumA = (TextView) findViewById(R.id.txtNumA);
         txtNumB = (TextView) findViewById(R.id.txtNumB);
@@ -67,6 +76,9 @@ public class PlayGameActivity extends AppCompatActivity implements View.OnClickL
         prb = (ProgressBar) findViewById(R.id.prb);
     }
 
+    // Hàm chơi game
+    // Random số và kết quả
+    // Tính tổng 2 số và so sánh với kết quả random, đúng thì gán flag = true
     private void PlayGame(){
         progress = 59;
         Random rd = new Random();
@@ -85,6 +97,8 @@ public class PlayGameActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    // bấm vào nút đúng thì gửi true đi, sai thì gửi false đi
+    // Gọi hàm CheckGame để kiểm tra
     @Override
     public void onClick(View view) {
         int id = view.getId();
@@ -100,6 +114,9 @@ public class PlayGameActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    // So sánh giá trị gửi đi khi click vào nút với flag
+    // Giống nhau thì tăng điểm lên 1, gọi lại hàm chơi game và khởi động timer
+    // Sai thì gọi hàm dừng game và dừng timer lại
     private void CheckGame(boolean b) {
         if(b == flag){
             score++;
@@ -108,64 +125,49 @@ public class PlayGameActivity extends AppCompatActivity implements View.OnClickL
         }
         else{
             timer.cancel();
-            CheckScore();
-        }
-    }
-
-    private void CheckScore() {
-        SharedPreferences preference = getSharedPreferences("SCORE",MODE_PRIVATE);
-        int count = Integer.parseInt(preference.getString("SCORE","0"));
-        if(score > count) {
+            v.vibrate(500);
             StopGame();
         }
-        else{
-            PlayAgain();
-        }
     }
 
+    // Hàm dừng chơi game và hỏi người dùng có muốn chơi lại không
+    // Hiển thị lên các thông tin về điểm hiện tại, điểm cao nhất
+    // Cho người dùng chọn chơi lại hoặc không
     private void StopGame() {
         final Dialog dialog = new Dialog(PlayGameActivity.this);
         dialog.setContentView(R.layout.end_game_dialog);
-        Button btnSave = (Button) dialog.findViewById(R.id.btnSave);
-        final EditText edtName = (EditText) dialog.findViewById(R.id.edtName);
         TextView txtTotalScore = (TextView) dialog.findViewById(R.id.txtTotalScore);
+        TextView txtHighScore = (TextView) dialog.findViewById(R.id.txtHighScore);
+        final ImageButton btnPlayAgain = (ImageButton) dialog.findViewById(R.id.btnPlayAgain);
+        ImageButton btnStop = (ImageButton) dialog.findViewById(R.id.btnStop);
         txtTotalScore.setText(score+"");
-        btnSave.setOnClickListener(new View.OnClickListener() {
+        SharedPreferences preference = getSharedPreferences("SCORE",MODE_PRIVATE);
+        SharedPreferences.Editor editor = preference.edit();
+
+        int highScore = preference.getInt("SCORE",0);
+        txtHighScore.setText(highScore+"");
+        if(highScore < score){
+            editor.putInt("SCORE",score);
+            editor.commit();
+        }
+        btnStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences preference = getSharedPreferences("SCORE",MODE_PRIVATE);
-                SharedPreferences.Editor editor = preference.edit();
-                editor.putString("NAME",edtName.getText().toString());
-                editor.putString("SCORE",score+"");
-                editor.commit();
-                dialog.dismiss();
-                PlayAgain();
-            }
-        });
-        dialog.show();
-    }
-
-    private void PlayAgain() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(PlayGameActivity.this);
-        builder.setTitle("Bạn có muốn chơi lại không");
-        builder.setPositiveButton("CÓ", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                score = 0;
-                prb.setProgress(0);
-                btnTrue.setEnabled(true);
-                btnFalse.setEnabled(true);
-                PlayGame();
-            }
-        });
-        builder.setNegativeButton("KHÔNG", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
                 Intent intent = new Intent(PlayGameActivity.this,MainActivity.class);
                 startActivity(intent);
             }
         });
-        builder.setCancelable(false);
-        builder.create().show();
+        btnPlayAgain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                score = 0;
+                PlayGame();
+                btnTrue.setEnabled(true);
+                btnFalse.setEnabled(true);
+            }
+        });
+        dialog.setCancelable(false);
+        dialog.show();
     }
 }
