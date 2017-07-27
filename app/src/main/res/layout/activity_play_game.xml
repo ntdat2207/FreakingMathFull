@@ -99,6 +99,7 @@
         app:layout_constraintLeft_toRightOf="@+id/textView2" />
 
     <ImageButton
+        android:background="@drawable/bg_true"
         android:id="@+id/btnTrue"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -115,6 +116,7 @@
         app:layout_constraintVertical_bias="0.505" />
 
     <ImageButton
+        android:background="@drawable/bg_false"
         android:id="@+id/btnFalse"
         android:layout_width="0dp"
         android:layout_height="0dp"

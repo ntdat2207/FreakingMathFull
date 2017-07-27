@@ -38,12 +38,12 @@
 
     <Button
         android:id="@+id/btnPlay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="84dp"
+        android:layout_height="78dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="16dp"
-        android:background="@drawable/play"
+        android:background="@drawable/ic_play_circle"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline" />

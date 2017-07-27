@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
 import android.support.v7.app.AlertDialog;
@@ -31,6 +32,7 @@ public class PlayGameActivity extends AppCompatActivity implements View.OnClickL
     CountDownTimer timer;
     int progress = 59;
     Vibrator v;
+    MediaPlayer player;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +40,7 @@ public class PlayGameActivity extends AppCompatActivity implements View.OnClickL
         initView();
 
         v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        player = MediaPlayer.create(PlayGameActivity.this,R.raw.button);
 
         PlayGame();
         btnTrue.setOnClickListener(this);
@@ -104,10 +107,12 @@ public class PlayGameActivity extends AppCompatActivity implements View.OnClickL
         int id = view.getId();
         switch (id){
             case R.id.btnTrue:
+                player.start();
                 timer.cancel();
                 CheckGame(true);
                 break;
             case R.id.btnFalse:
+                player.start();
                 timer.cancel();
                 CheckGame(false);
                 break;
